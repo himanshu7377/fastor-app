@@ -1,10 +1,24 @@
 // SingleRestaurantPage.js
-import React from "react";
-import { useParams } from "react-router-dom";
-const SingleRestaurantPage = ({ restaurant }) => {
-    const { restaurantId } = useParams();
+import React,{useEffect, useState} from "react";
+import axios from "axios";
 
-    console.log(restaurant)
+const SingleRestaurantPage = ({ restaurant }) => {
+    const [restaurants,setRestaurants]=useState([])
+
+    useEffect(() => {
+        // Retrieve token from localStorage
+        const token = localStorage.getItem("token");
+    
+        // Fetch nearby restaurants using REST API with authorization token
+        axios
+          .get("https://staging.fastor.in/v1/m/restaurant?city_id=118&&", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => setRestaurants(response.data))
+          .catch((error) => console.error(error));
+      }, []); // Empty dependency array to run the effec
   if (!restaurant) {
     return <p>Loading...</p>;
   }
