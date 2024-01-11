@@ -1,24 +1,43 @@
-// SingleRestaurantPage.js
-import React,{useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const SingleRestaurantPage = ({ restaurant }) => {
-    const [restaurants,setRestaurants]=useState([])
+const SingleRestaurantPage = () => {
+  const { restaurantId } = useParams();
+  const [restaurant, setRestaurant] = useState(null);
 
-    useEffect(() => {
-        // Retrieve token from localStorage
-        const token = localStorage.getItem("token");
-    
-        // Fetch nearby restaurants using REST API with authorization token
-        axios
-          .get("https://staging.fastor.in/v1/m/restaurant?city_id=118&&", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => setRestaurants(response.data))
-          .catch((error) => console.error(error));
-      }, []); // Empty dependency array to run the effec
+  useEffect(() => {
+    // Retrieve token from localStorage
+    const token = localStorage.getItem("token");
+  
+    // Fetch the list of all restaurants
+    axios
+      .get(`https://staging.fastor.in/v1/m/restaurant`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        // Log the entire response data to the console for inspection
+        console.log('Response Data:', response.data);
+  
+        // Find the restaurant with the matching ID
+        const foundRestaurant = response.data.find(
+          (restaurant) => restaurant.restaurant_id === restaurantId
+        );
+  
+        // Log the found restaurant to the console for inspection
+        console.log('Found Restaurant:', foundRestaurant);
+  
+        // Set the found restaurant in the state
+        setRestaurant(foundRestaurant);
+      })
+      .catch((error) => console.error(error));
+  }, [restaurantId]);
+  
+
+  
+  console.log(restaurant)
   if (!restaurant) {
     return <p>Loading...</p>;
   }

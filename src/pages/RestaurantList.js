@@ -1,7 +1,6 @@
 // RestaurantList.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import RestaurantCard from "../component/RestaurantCard";
 import SingleRestaurantPage from "./SingleRestaurantPage";
 
@@ -29,29 +28,25 @@ const RestaurantList = () => {
   };
 
   return (
-    <div>
-      <h2>Restaurants Nearby</h2>
-      {restaurants.length > 0 ? (
-        <ul>
-          {restaurants.map((restaurant) => (
-            <li key={restaurant.restaurant_id}>
-              <Link
-                to={`/restaurants/${restaurant.restaurant_id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
+    <div className="flex items-center justify-center">
+      <div className="w-[375px] flex flex-col items-center">
+        <h2>Restaurants Nearby</h2>
+        {restaurants.length > 0 ? (
+          <ul>
+            {restaurants.map((restaurant) => (
+              <li key={restaurant.restaurant_id}>
                 <RestaurantCard
                   key={restaurant.restaurant_id}
                   restaurant={restaurant}
                   onRestaurantClick={() => handleRestaurantClick(restaurant)}
                 />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Loading...</p>
-      )}
-
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
       {selectedRestaurant && <SingleRestaurantPage restaurant={selectedRestaurant} />}
     </div>
   );
