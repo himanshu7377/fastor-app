@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RestaurantCard from "../component/RestaurantCard";
-import SingleRestaurantPage from "./SingleRestaurantPage";
+
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+
 
   useEffect(() => {
     // Retrieve token from localStorage
@@ -23,9 +23,7 @@ const RestaurantList = () => {
       .catch((error) => console.error(error));
   }, []); // Empty dependency array to run the effect only once
 
-  const handleRestaurantClick = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-  };
+  
 
   return (
     <div className="flex items-center justify-center">
@@ -38,7 +36,7 @@ const RestaurantList = () => {
                 <RestaurantCard
                   key={restaurant.restaurant_id}
                   restaurant={restaurant}
-                  onRestaurantClick={() => handleRestaurantClick(restaurant)}
+                  
                 />
               </li>
             ))}
@@ -47,7 +45,7 @@ const RestaurantList = () => {
           <p>Loading...</p>
         )}
       </div>
-      {selectedRestaurant && <SingleRestaurantPage restaurant={selectedRestaurant} />}
+
     </div>
   );
 };

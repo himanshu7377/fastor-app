@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import '../global.css'
 
 const SingleRestaurantPage = () => {
   const { restaurantId } = useParams();
   const [restaurant, setRestaurant] = useState(null);
+  const [logoPosition, setLogoPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     // Retrieve token from localStorage
@@ -18,16 +21,10 @@ const SingleRestaurantPage = () => {
         },
       })
       .then((response) => {
-        // Log the entire response data to the console for inspection
-        console.log("Response Data:", response.data);
-
         // Find the restaurant with the matching ID
         const foundRestaurant = response.data.find(
           (restaurant) => restaurant.restaurant_id === restaurantId
         );
-
-        // Log the found restaurant to the console for inspection
-        console.log("Found Restaurant:", foundRestaurant);
 
         // Set the found restaurant in the state
         setRestaurant(foundRestaurant);
@@ -35,31 +32,86 @@ const SingleRestaurantPage = () => {
       .catch((error) => console.error(error));
   }, [restaurantId]);
 
-  console.log(restaurant);
+  const handleLogoMouseDown = (e) => {
+    setIsDragging(true);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      setLogoPosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
   if (!restaurant) {
     return <p>Loading...</p>;
   }
 
-  const {
-    restaurant_name,
-    cuisines,
-    location,
-    rating,
-    avg_cost_for_two,
-    currency,
-    images,
-  } = restaurant;
+  const { restaurant_name, location, rating, images } = restaurant;
 
   return (
-    <div className="flex flex-col items-center mt-5">
+    <div className="flex flex-col items-center mt-5 relative">
+      {/* Status Bar */}
+      <div
+        id="StatusBarRoot"
+        className="flex flex-row justify-between w-[375px] h-10 items-center px-5 z-50"
+        style={{ position: "absolute", top: 20, left: 570 }}
+      >
+        <img
+          src="https://file.rendit.io/n/aWZqAWAWoCElPB0F2GJU.svg"
+          alt="TimeLightBase"
+          id="TimeLightBase"
+          className="mt-px w-12"
+        />
+        <img
+          src="https://file.rendit.io/n/TQ56hQnw9M0ar1rl1mh4.svg"
+          alt="RightSide"
+          id="RightSide"
+          className="mt-2 w-16"
+        />
+      </div>
+
       {/* Upper part with image */}
-      <div style={{ height: "400px", overflow: "hidden", width: "375px" }}>
+      <div
+        style={{
+          position: "relative",
+          height: "400px",
+          overflow: "hidden",
+          width: "375px",
+        }}
+      >
         {images && images.length > 0 && (
-          <img
-            src={images[0]?.url}
-            alt={restaurant_name}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          <>
+            <img
+              src={images[0]?.url}
+              alt={restaurant_name}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+            <div
+              className="fastor-logo"
+              style={{
+                position: "absolute",
+                top: `${logoPosition.y}px`,
+                left: `${logoPosition.x}px`,
+                cursor: "pointer",
+                color:"white"
+              }}
+              onMouseDown={handleLogoMouseDown}
+              draggable="false"
+            >
+              Fastor Text 
+            </div>
+          </>
         )}
       </div>
 
@@ -96,7 +148,7 @@ const SingleRestaurantPage = () => {
               className="w-4"
             />
             <div className="text-xs font-semibold text-[#d39171] mt-px">
-             <p>4 Offers Trending</p>
+              <p>4 Offers Trending</p>
             </div>
           </div>
         </div>

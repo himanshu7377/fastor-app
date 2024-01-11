@@ -6,8 +6,7 @@ const RestaurantCard = ({ restaurant, onRestaurantClick }) => {
   const navigate = useNavigate();
 
   const handleRestaurantClick = () => {
-    // Use the provided callback to handle the click
-    onRestaurantClick(restaurant);
+    
 
     // Alternatively, if you want to navigate here, use navigate directly
     navigate(`/restaurants/${restaurant.restaurant_id}`);

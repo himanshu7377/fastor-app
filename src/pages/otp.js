@@ -3,21 +3,22 @@ import { useNavigate ,useParams} from "react-router-dom";
 import axios from "axios";
 
 const OtpPage = () => {
-  const [otp, setOtp] = useState('123456');
+  const [otp, setOtp] = useState(['1', '2', '3', '4', '5', '6']);
+  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
   const { mobileNumber } = useParams();
 
   const handleVerifyOTP = async () => {
     try {
 
-      const otpString = otp // Combine the OTP digits into a single string
+      
 
       const response = await axios.post(
         "https://staging.fastor.in/v1/pwa/user/login",
         {
           phone: mobileNumber,
           dial_code: "+91",
-          otp: otpString,
+          otp: "123456",
         }
       );
 
@@ -29,16 +30,16 @@ const OtpPage = () => {
     //   console.log("Response Data:", response.data);
 
       if (response.data.status === "Success") {
-        alert("OTP verified successfully! User logged in.");
+        // alert("OTP verified successfully! User logged in.");
         const token = response.data.data.token;
         localStorage.setItem("token", token);
         navigate("/RestaurantList"); // Redirect to the list of restaurants page
       } else {
-        alert("Failed to verify OTP. Please try again.");
+        setErrorMessage("Failed to verify OTP. Please try again.");
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      alert("An error occurred. Please try again later.");
+      setErrorMessage("An error occurred. Please try again later.");
     }
   };
 
